@@ -1,0 +1,40 @@
+{
+  "name": "bicicletario",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxi typecheck",
+    "lint": "eslint . && stylelint \"**/*.css\"",
+    "lint:fix": "eslint . --fix && stylelint \"**/*.css\" --fix"
+  },
+
+  "dependencies": {
+    "@nuxt/scripts": "^0.8.5",
+    "@nuxt/ui": "^2.18.4",
+    "@nuxtjs/seo": "2.0.0-rc.21",
+    "ldap-passwords": "^3.0.3",
+    "ldapjs": "^3.0.7",
+    "mongoose": "^8.6.2",
+    "nuxt": "^3.13.1",
+    "nuxt-auth-utils": "^0.3.8",
+    "nuxt-security": "2.0.0-rc.9",
+    "v-calendar": "3.1.2",
+    "vue": "3.5.4",
+    "vue-router": "^4.4.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@dethdkn/eslint-config": "^1.5.17",
+    "@nuxt/devtools": "^1.4.2",
+    "eslint": "9.10.0",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1",
+    "vue-tsc": "^2.1.6"
+  }
+
+}
