@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   colorMode: { fallback: 'dark', preference: 'dark' },
   site: {
     url: SITE_URL,
-    name: 'Agenda Digital CBPF',
+    name: 'Bicicletario',
     description: 'O sistema biciletario',
     identity: { type: 'Organization' },
   },

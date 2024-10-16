@@ -5,6 +5,7 @@ const menuClosed = ref(true)
 
 const menu = ref<{ nome: string, to: string, nivel: null | string[] }[]>([
   { nome: 'Início', to: '/', nivel: null },
+  { nome: 'Perfil', to: `/user/${user.value?.email}`, nivel: ['Usuário'] },
 ])
 
 const colorMode = useColorMode()
@@ -18,7 +19,7 @@ const themeMenu = computed(() => [[
 
 const userMenu = computed(() => [
   [
-    { label: user.value?.nome || 'Usuário', icon: 'i-heroicons-user-circle' },
+    { label: user.value?.nome || 'Usuário', icon: 'i-heroicons-user-circle', click: () => navigateTo(`/user/${user.value?.email}`) },
     { label: user.value?.level || 'Level', icon: 'i-heroicons-ticket' },
   ],
   [{ label: 'Sair', icon: 'i-heroicons-arrow-right-on-rectangle', click: logout }],

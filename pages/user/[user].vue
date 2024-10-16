@@ -1,0 +1,131 @@
+<script setup lang="ts">
+import type { User } from '~/schemas/authentication'
+
+definePageMeta({ pageTransition: { name: 'slide-right', mode: 'out-in' } })
+
+const { user } = useRoute().params
+
+const { data } = await useFetch('/api/fetch/user', { method: 'post', body: { user } })
+
+if(!data.value) throw createError({ statusCode: 404, statusMessage: 'Não encontrado', message: 'Este usuário não existe' })
+
+const dados = ref(data.value.dadosBancarios)
+const isEdit = ref(false)
+
+const stateUser = ref<User>({ nome: data.value.nome, sobrenome: data.value.sobrenome, cpf: data.value.cpf, email: data.value.email, senha: '', confirmacaoSenha: '', dadosBancarios: data.value.dadosBancarios, numeroCartao: data.value.numeroCartao ? data.value.numeroCartao : '', dataValidade: data.value.dataValidade ? data.value.dataValidade : '', cvv: data.value.cvv ? data.value.cvv : '', nomeCartao: data.value.nomeCartao ? data.value.nomeCartao : '', cpfCartao: data.value.cpfCartao ? data.value.cpfCartao : '' })
+
+function applyCardMask(event: Event){
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replaceAll(/\D/g, '').replaceAll(/(\d{4})(?=\d)/g, '$1 ')
+  stateUser.value.numeroCartao = input.value
+}
+
+function applyExpiryMask(event: Event){
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replaceAll(/\D/g, '').replace(/(\d{2})(\d{2})/, '$1/$2')
+  stateUser.value.dataValidade = input.value
+}
+
+watch(isEdit, nv => {
+  if(!nv && data.value){
+    dados.value = data.value.dadosBancarios
+    stateUser.value.nome = data.value.nome
+    stateUser.value.sobrenome = data.value.sobrenome
+    stateUser.value.cpf = data.value.cpf
+    stateUser.value.email = data.value.email
+    stateUser.value.senha = ''
+    stateUser.value.confirmacaoSenha = ''
+    stateUser.value.dadosBancarios = data.value.dadosBancarios
+    stateUser.value.numeroCartao = data.value.numeroCartao ? data.value.numeroCartao : ''
+    stateUser.value.dataValidade = data.value.dataValidade ? data.value.dataValidade : ''
+    stateUser.value.cvv = data.value.cvv ? data.value.cvv : ''
+    stateUser.value.nomeCartao = data.value.nomeCartao ? data.value.nomeCartao : ''
+    stateUser.value.cpfCartao = data.value.cpfCartao ? data.value.cpfCartao : ''
+  }
+})
+</script>
+
+<template>
+  <section>
+    <div class="flex flex-col items-center justify-center">
+      <img src="/icone.jpg" alt="user" class="mt-9 size-36 rounded-full">
+      <h1 class="mt-4 text-2xl font-semibold">
+        {{ stateUser.nome }} {{ stateUser.sobrenome }}
+      </h1>
+    </div>
+
+    <div class="m-6">
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="nome">Nome</label>
+          <UInput id="Nome" v-model="stateUser.nome" icon="i-heroicons-user" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="sobrenome">Sobrenome</label>
+          <UInput id="Sobrenome" v-model="stateUser.sobrenome" icon="i-heroicons-user" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf">CPF</label>
+          <UInput id="CPF" v-model="stateUser.cpf" icon="i-heroicons-document" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="email">Email</label>
+          <UInput id="Email" v-model="stateUser.email" icon="i-heroicons-envelope" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="senha">Senha Atual</label>
+          <UInput id="Senha" v-model="stateUser.senha" icon="i-heroicons-key" type="password" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="senha">Nova Senha</label>
+          <UInput id="Senha" v-model="stateUser.senha" icon="i-heroicons-key" type="password" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="confirmarSenha">Confirmar Senha</label>
+          <UInput id="ConfirmarSenha" v-model="stateUser.confirmacaoSenha" icon="i-heroicons-check" type="password" :disabled="!isEdit" />
+        </div>
+      </div>
+
+      <UDivider label="Dados de Pagamento" class="my-10" />
+
+      <div class=" flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-900 dark:text-white" for="1-parcela">Deseja Inserir Dados Bancarios?</label>
+        <UToggle id="1-parcela" v-model="dados" on-icon="i-heroicons-check-20-solid" off-icon="i-heroicons-x-mark-20-solid" :disabled="!isEdit" />
+      </div>
+
+      <div v-if="dados" class="mt-5 grid grid-cols-3 gap-4">
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="numero-cartao">Numero do cartão</label>
+          <UInput id="numero-cartao" v-model="stateUser.numeroCartao" icon="i-heroicons-credit-card" maxlength="19" :disabled="!isEdit" @input="applyCardMask" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="validade-cartao">Validade do cartão</label>
+          <UInput id="validade-cartao" v-model="stateUser.dataValidade" icon="i-heroicons-calendar" maxlength="4" :disabled="!isEdit" @input="applyExpiryMask" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="cvv">CVV</label>
+          <UInput id="cvv" v-model="stateUser.cvv" icon="i-heroicons-lock-closed" maxlength="3" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="nome-cartao">Nome do cartão</label>
+          <UInput id="nome-cartao" v-model="stateUser.nomeCartao" icon="i-heroicons-user" :disabled="!isEdit" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf-cartao">CPF do cartão</label>
+          <UInput id="cpf-cartao" v-model="stateUser.cpfCartao" icon="i-heroicons-document" maxlength="11" :disabled="!isEdit" />
+        </div>
+      </div>
+    </div>
+    <div class="my-10 flex items-center justify-center space-x-4">
+      <UButton v-if="!isEdit" :ui="{ rounded: 'rounded-full' }" variant="outline" color="amber" class="flex items-center justify-center" @click="isEdit = true">
+        Permitir Edição
+      </UButton>
+      <UButton v-if="isEdit" :ui="{ rounded: 'rounded-full' }" variant="outline" color="red" class="flex items-center justify-center" @click="isEdit = false">
+        Cancelar Edição
+      </UButton>
+      <UButton v-if="isEdit" :ui="{ rounded: 'rounded-full' }" variant="outline" color="green" class="flex items-center justify-center" @click="isEdit = true">
+        Confirmar Edição
+      </UButton>
+    </div>
+  </section>
+</template>

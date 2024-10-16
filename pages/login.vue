@@ -101,8 +101,8 @@ watch(modalInscrevasse, nv => {
 </script>
 
 <template>
-  <section class="min-h-[calc(100vh-64px)] bg-[url('/fundo-claro.webp')] bg-cover bg-center bg-no-repeat dark:bg-[url('/fundo-escuro.webp')]">
-    <div class="mx-auto flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6">
+  <section class="min-h-[calc(100vh-131px)] bg-[url('/fundo-claro.webp')] bg-cover bg-center bg-no-repeat dark:bg-[url('/fundo-escuro.webp')]">
+    <div class="mx-auto flex min-h-[calc(100vh-131px)] flex-col items-center justify-center px-6">
       <div class="w-full rounded-lg  bg-white shadow sm:max-w-md md:mt-0 xl:p-0 dark:border dark:border-gray-700 dark:bg-gray-800">
         <div class="space-y-4 p-6 sm:p-8 md:space-y-6">
           <h1 class="ms-2 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
