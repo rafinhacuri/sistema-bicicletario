@@ -1,5 +1,5 @@
 import { sha512Crypt } from 'ldap-passwords'
-import { UserSchema } from '~/schemas/authentication'
+import { UserSchema } from '~/schemas/user'
 
 export default defineEventHandler(async event => {
   const body = await readValidatedBody(event, UserSchema.safeParse)

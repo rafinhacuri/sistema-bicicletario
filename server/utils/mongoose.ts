@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import type { UserAdm, UserMongo } from '~/schemas/authentication'
+import type { UserAdm, UserMongo } from '~/schemas/user'
 
 const { MONGO_URL, MONGO_USERNAME, MONGO_PASSWORD, MONGO_DB_NAME } = useRuntimeConfig()
 
@@ -8,13 +8,6 @@ mongoose.connect(MONGO_URL, {
   auth: { username: MONGO_USERNAME, password: MONGO_PASSWORD },
   dbName: MONGO_DB_NAME,
 })
-
-export const Log = mongoose.model('log', new Schema({
-  usuario: { type: String, required: true },
-  acao: { type: String, required: true },
-  data: { type: Date, default: Date.now },
-  ip: { type: String, required: false },
-}))
 
 export const Adm = mongoose.model('adm', new Schema<UserAdm>({
   email: { type: String, required: true },

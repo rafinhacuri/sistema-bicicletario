@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { Authentication, User } from '~/schemas/authentication'
-import { AuthenticationSchema, UserSchema } from '~/schemas/authentication'
+import type { Authentication } from '~/schemas/authentication'
+import type { User } from '~/schemas/user'
+import { AuthenticationSchema } from '~/schemas/authentication'
+import { UserSchema } from '~/schemas/user'
 
 useHead({ title: `Login` })
 
@@ -145,7 +147,7 @@ watch(modalInscrevasse, nv => {
             <UInput id="Sobrenome" v-model="stateUser.sobrenome" icon="i-heroicons-user" />
           </div>
           <div>
-            <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf">CPF</label>
+            <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf" maxlength="11">CPF</label>
             <UInput id="CPF" v-model="stateUser.cpf" icon="i-heroicons-document" />
           </div>
           <div>

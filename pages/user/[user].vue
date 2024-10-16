@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import type { User } from '~/schemas/authentication'
+import type { UserEdit } from '~/schemas/user'
+import { UserEditSchema } from '~/schemas/user'
 
 definePageMeta({ pageTransition: { name: 'slide-right', mode: 'out-in' } })
 
 const { user } = useRoute().params
 
-const { data } = await useFetch('/api/fetch/user', { method: 'post', body: { user } })
+const { data, refresh } = await useFetch('/api/fetch/user', { method: 'post', body: { user } })
 
 if(!data.value) throw createError({ statusCode: 404, statusMessage: 'Não encontrado', message: 'Este usuário não existe' })
+
+const toast = useToast()
+
+const { start, finish, isLoading } = useLoadingIndicator()
 
 const dados = ref(data.value.dadosBancarios)
 const isEdit = ref(false)
 
-const stateUser = ref<User>({ nome: data.value.nome, sobrenome: data.value.sobrenome, cpf: data.value.cpf, email: data.value.email, senha: '', confirmacaoSenha: '', dadosBancarios: data.value.dadosBancarios, numeroCartao: data.value.numeroCartao ? data.value.numeroCartao : '', dataValidade: data.value.dataValidade ? data.value.dataValidade : '', cvv: data.value.cvv ? data.value.cvv : '', nomeCartao: data.value.nomeCartao ? data.value.nomeCartao : '', cpfCartao: data.value.cpfCartao ? data.value.cpfCartao : '' })
+const stateUser = ref<UserEdit>({ id: data.value._id, nome: data.value.nome, sobrenome: data.value.sobrenome, cpf: data.value.cpf, email: data.value.email, senhaAtual: '', senhaNova: '', confirmacaoSenha: '', dadosBancarios: data.value.dadosBancarios, numeroCartao: data.value.numeroCartao ? data.value.numeroCartao : '', dataValidade: data.value.dataValidade ? data.value.dataValidade : '', cvv: data.value.cvv ? data.value.cvv : '', nomeCartao: data.value.nomeCartao ? data.value.nomeCartao : '', cpfCartao: data.value.cpfCartao ? data.value.cpfCartao : '' })
 
 function applyCardMask(event: Event){
   const input = event.target as HTMLInputElement
@@ -26,6 +31,40 @@ function applyExpiryMask(event: Event){
   stateUser.value.dataValidade = input.value
 }
 
+async function editUser(){
+  start()
+
+  stateUser.value.dadosBancarios = dados.value
+
+  const body = UserEditSchema.safeParse(stateUser.value)
+
+  if(!body.success){
+    toast.add({ title: body.error.errors[0].message, icon: 'i-heroicons-exclamation-triangle', color: 'red' })
+    return finish({ error: true })
+  }
+
+  const res = await $fetch('/api/update/user', { method: 'post', body: body.data })
+    .catch(error => { toast.add({ title: error.data.message, icon: 'i-heroicons-exclamation-triangle', color: 'red' }) })
+
+  if(!res) return finish({ error: true })
+
+  finish()
+  await refresh()
+  toast.add({ title: res, icon: 'i-heroicons-check-badge', color: 'green' })
+  isEdit.value = false
+  if(data.value && (body.data.email !== data.value.email)) navigateTo(`/user/${body.data.email}`)
+}
+
+watch(dados, nv => {
+  if(!nv){
+    stateUser.value.numeroCartao = ''
+    stateUser.value.dataValidade = ''
+    stateUser.value.cvv = ''
+    stateUser.value.nomeCartao = ''
+    stateUser.value.cpfCartao = ''
+  }
+})
+
 watch(isEdit, nv => {
   if(!nv && data.value){
     dados.value = data.value.dadosBancarios
@@ -33,7 +72,8 @@ watch(isEdit, nv => {
     stateUser.value.sobrenome = data.value.sobrenome
     stateUser.value.cpf = data.value.cpf
     stateUser.value.email = data.value.email
-    stateUser.value.senha = ''
+    stateUser.value.senhaAtual = ''
+    stateUser.value.senhaNova = ''
     stateUser.value.confirmacaoSenha = ''
     stateUser.value.dadosBancarios = data.value.dadosBancarios
     stateUser.value.numeroCartao = data.value.numeroCartao ? data.value.numeroCartao : ''
@@ -49,8 +89,8 @@ watch(isEdit, nv => {
   <section>
     <div class="flex flex-col items-center justify-center">
       <img src="/icone.jpg" alt="user" class="mt-9 size-36 rounded-full">
-      <h1 class="mt-4 text-2xl font-semibold">
-        {{ stateUser.nome }} {{ stateUser.sobrenome }}
+      <h1 v-if="data" class="mt-4 text-2xl font-semibold">
+        {{ data.nome }} {{ data.sobrenome }}
       </h1>
     </div>
 
@@ -66,7 +106,7 @@ watch(isEdit, nv => {
         </div>
         <div>
           <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf">CPF</label>
-          <UInput id="CPF" v-model="stateUser.cpf" icon="i-heroicons-document" :disabled="!isEdit" />
+          <UInput id="CPF" v-model="stateUser.cpf" icon="i-heroicons-document" :disabled="!isEdit" maxlength="11" />
         </div>
         <div>
           <label class="text-sm font-medium text-gray-900 dark:text-white" for="email">Email</label>
@@ -74,11 +114,11 @@ watch(isEdit, nv => {
         </div>
         <div>
           <label class="text-sm font-medium text-gray-900 dark:text-white" for="senha">Senha Atual</label>
-          <UInput id="Senha" v-model="stateUser.senha" icon="i-heroicons-key" type="password" :disabled="!isEdit" />
+          <UInput id="Senha" v-model="stateUser.senhaAtual" icon="i-heroicons-key" type="password" :disabled="!isEdit" />
         </div>
         <div>
           <label class="text-sm font-medium text-gray-900 dark:text-white" for="senha">Nova Senha</label>
-          <UInput id="Senha" v-model="stateUser.senha" icon="i-heroicons-key" type="password" :disabled="!isEdit" />
+          <UInput id="Senha" v-model="stateUser.senhaNova" icon="i-heroicons-key" type="password" :disabled="!isEdit" />
         </div>
         <div>
           <label class="text-sm font-medium text-gray-900 dark:text-white" for="confirmarSenha">Confirmar Senha</label>
@@ -123,7 +163,7 @@ watch(isEdit, nv => {
       <UButton v-if="isEdit" :ui="{ rounded: 'rounded-full' }" variant="outline" color="red" class="flex items-center justify-center" @click="isEdit = false">
         Cancelar Edição
       </UButton>
-      <UButton v-if="isEdit" :ui="{ rounded: 'rounded-full' }" variant="outline" color="green" class="flex items-center justify-center" @click="isEdit = true">
+      <UButton v-if="isEdit" :ui="{ rounded: 'rounded-full' }" variant="outline" color="green" class="flex items-center justify-center" :disabled="isLoading" :loading="isLoading" @click="editUser">
         Confirmar Edição
       </UButton>
     </div>
