@@ -10,9 +10,9 @@ export default defineEventHandler(async event => {
 
   const existe = await Users.findOne({ email })
 
-  const existe2 = await Adm.findOne({ email })
-
   if(existe) throw createError({ status: 401, message: 'Usuário já cadastrado' })
+
+  const existe2 = await Adm.findOne({ email })
 
   if(existe2) throw createError({ status: 401, message: 'Usuário já cadastrado' })
 

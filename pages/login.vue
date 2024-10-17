@@ -147,8 +147,8 @@ watch(modalInscrevasse, nv => {
             <UInput id="Sobrenome" v-model="stateUser.sobrenome" icon="i-heroicons-user" />
           </div>
           <div>
-            <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf" maxlength="11">CPF</label>
-            <UInput id="CPF" v-model="stateUser.cpf" icon="i-heroicons-document" />
+            <label class="text-sm font-medium text-gray-900 dark:text-white" for="cpf">CPF</label>
+            <UInput id="CPF" v-model="stateUser.cpf" icon="i-heroicons-document" maxlength="11" />
           </div>
           <div>
             <label class="text-sm font-medium text-gray-900 dark:text-white" for="email">Email</label>

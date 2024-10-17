@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import type { BikeMongo } from '~/schemas/bicicleta'
 import type { UserAdm, UserMongo } from '~/schemas/user'
 
 const { MONGO_URL, MONGO_USERNAME, MONGO_PASSWORD, MONGO_DB_NAME } = useRuntimeConfig()
@@ -27,4 +28,13 @@ export const Users = mongoose.model('user', new Schema<UserMongo>({
   dataValidade: { type: String, required: false },
   nomeCartao: { type: String, required: false },
   cpfCartao: { type: String, required: false },
+}))
+
+export const Bikes = mongoose.model('bikes', new Schema<BikeMongo>({
+  status: { type: String, default: 'Disponível' },
+  codigo: { type: String, required: true },
+  modelo: { type: String, required: true },
+  marca: { type: String, required: true },
+  precoMinuto: { type: Number, required: true },
+  valor: { type: Number, required: true },
 }))

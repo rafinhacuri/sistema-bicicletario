@@ -6,6 +6,7 @@ const menuClosed = ref(true)
 const menu = ref<{ nome: string, to: string, nivel: null | string[] }[]>([
   { nome: 'Início', to: '/', nivel: null },
   { nome: 'Perfil', to: `/user/${user.value?.email}`, nivel: ['Usuário'] },
+  { nome: 'Gerencia', to: `/adm`, nivel: ['Administrador'] },
 ])
 
 const colorMode = useColorMode()
