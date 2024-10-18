@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     description: 'O sistema biciletario',
     identity: { type: 'Organization' },
   },
+  robots: { disallow: ['/user/', '/adm'] },
   security: {
     headers: {
       crossOriginEmbedderPolicy: PRODUCTION === 'true' ? 'require-corp' : 'unsafe-none',
