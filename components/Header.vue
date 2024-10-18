@@ -7,7 +7,7 @@ const menuClosed = ref(true)
 
 const menu = ref<{ nome: string, to: string, nivel: null | string[] }[]>([
   { nome: 'Início', to: '/', nivel: null },
-  { nome: 'Alugue', to: `/alugue`, nivel: ['Administrador', 'Usuário'] },
+  { nome: 'Alugue', to: `/alugue`, nivel: ['Usuário'] },
   { nome: 'Perfil', to: `/user/${user.value?.email}`, nivel: ['Usuário'] },
   { nome: 'Gerencia', to: `/adm`, nivel: ['Administrador'] },
 ])
@@ -23,7 +23,7 @@ const themeMenu = computed(() => [[
 
 const userMenu = computed(() => [
   [
-    { label: user.value?.nome || 'Usuário', icon: 'i-heroicons-user-circle', click: () => navigateTo(`/user/${user.value?.email}`) },
+    { label: user.value?.nome || 'Usuário', icon: 'i-heroicons-user-circle', click: () => user.value?.level === 'Administrador' ? '' : navigateTo(`/user/${user.value?.email}`) },
     { label: user.value?.level || 'Level', icon: 'i-heroicons-ticket' },
   ],
   [{ label: 'Sair', icon: 'i-heroicons-arrow-right-on-rectangle', click: logout }],
