@@ -6,7 +6,7 @@ export default defineEventHandler(async event => {
 
   if(!body.success) throw createError({ status: 401, message: body.error.errors[0].message })
 
-  const { cpf, dadosBancarios, email, nome, senha, sobrenome, cpfCartao, cvv, dataValidade, nomeCartao, numeroCartao } = body.data
+  const { email, nome, senha } = body.data
 
   const existe = await Users.findOne({ email })
 
@@ -20,9 +20,7 @@ export default defineEventHandler(async event => {
 
   if(!senhaCrypt) throw createError({ status: 500, message: 'Erro ao criptografar a senha' })
 
-  if(dadosBancarios && (!numeroCartao || !cvv || !dataValidade || !nomeCartao || !cpfCartao)) throw createError({ status: 401, message: 'Preencha todos os campos de pagamento' })
-
-  await new Users({ cpf, dadosBancarios, nome, sobrenome, cpfCartao, cvv, dataValidade, nomeCartao, numeroCartao, email, senha: senhaCrypt }).save()
+  await new Users({ nome, email, senha: senhaCrypt }).save()
 
   return `Sua conta foi registrada com sucesso`
 })

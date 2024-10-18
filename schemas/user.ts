@@ -9,18 +9,10 @@ export const UserAdmSchema = z.object({
 export type UserAdm = z.infer<typeof UserAdmSchema>
 
 export const UserSchema = z.object({
+  nome: z.string().trim().min(1, { message: 'Preencha seu nome' }),
   email: z.string().email({ message: 'Preencha um Email válido' }),
   senha: z.string().trim().min(1, { message: 'Preencha sua Senha' }),
-  nome: z.string().trim().min(1, { message: 'Preencha seu Nome' }),
-  sobrenome: z.string().trim().min(1, { message: 'Preencha seu Sobrenome' }),
-  cpf: z.string().trim().min(1, { message: 'Preencha seu CPF' }),
   confirmacaoSenha: z.string().trim().min(1, { message: 'Confirme sua Senha' }),
-  dadosBancarios: z.boolean(),
-  numeroCartao: z.string().optional(),
-  cvv: z.string().optional(),
-  dataValidade: z.string().optional(),
-  nomeCartao: z.string().optional(),
-  cpfCartao: z.string().optional(),
 })
   .refine(data => data.senha === data.confirmacaoSenha, {
     message: 'As senhas não coincidem',
@@ -32,9 +24,9 @@ export type User = z.infer<typeof UserSchema>
 export const UserMongoSchema = z.object({
   email: z.string().email({ message: 'Preencha um Email válido' }),
   senha: z.string().min(1, { message: 'Preencha sua Senha' }),
-  nome: z.string().min(1, { message: 'Preencha seu Nome' }),
-  sobrenome: z.string().min(1, { message: 'Preencha seu Sobrenome' }),
-  cpf: z.string().min(1, { message: 'Preencha seu CPF' }),
+  nome: z.string().trim().min(1, { message: 'Preencha seu nome' }),
+  sobrenome: z.string().optional(),
+  cpf: z.string().optional(),
   dadosBancarios: z.boolean(),
   numeroCartao: z.string().optional(),
   cvv: z.string().optional(),
