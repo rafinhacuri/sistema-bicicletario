@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import type { AlugueMongo } from '~/schemas/alugar'
 import type { BikeMongo } from '~/schemas/bicicleta'
 import type { UserAdm, UserMongo } from '~/schemas/user'
 
@@ -29,6 +30,7 @@ export const Users = mongoose.model('user', new Schema<UserMongo>({
   nomeCartao: { type: String, required: false },
   cpfCartao: { type: String, required: false },
   foto: { type: String, required: false },
+  devedor: { type: Boolean, default: false },
 }))
 
 export const Bikes = mongoose.model('bikes', new Schema<BikeMongo>({
@@ -39,4 +41,14 @@ export const Bikes = mongoose.model('bikes', new Schema<BikeMongo>({
   precoMinuto: { type: Number, required: true },
   valor: { type: Number, required: true },
   foto: { type: String, required: false },
+}))
+
+export const Alugueis = mongoose.model('Alugueis', new Schema<AlugueMongo>({
+  email: { type: String, required: true },
+  codigo: { type: String, required: true },
+  dataInicio: { type: String, required: true },
+  dataFim: { type: String, required: false },
+  valor: { type: Number, required: false },
+  pago: { type: Boolean, default: false },
+  devolvido: { type: Boolean, default: false },
 }))

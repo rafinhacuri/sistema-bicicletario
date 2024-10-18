@@ -5,3 +5,9 @@ export const FetchUserSchema = z.object({
 })
 
 export type FetchUser = z.infer<typeof FetchUserSchema>
+
+export const FetchBikeSchema = z.object({
+  codigo: z.string().trim().min(1, { message: 'Preencha o usuário' }),
+})
+
+export type FetchBike = z.infer<typeof FetchBikeSchema>

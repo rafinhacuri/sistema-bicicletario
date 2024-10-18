@@ -41,6 +41,7 @@ export const UserMongoSchema = z.object({
   nomeCartao: z.string().optional(),
   cpfCartao: z.string().optional(),
   foto: z.string().optional(),
+  devedor: z.boolean(),
 })
 
 export type UserMongo = z.infer<typeof UserMongoSchema>

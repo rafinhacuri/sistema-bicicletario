@@ -16,11 +16,15 @@ const bikesAlugadas = computed(() => dataBikes.value ? dataBikes.value.filter((b
 
 const bikesNaoAlugadas = computed(() => dataBikes.value ? dataBikes.value.filter((bike: BikeMongo) => bike.status === 'Disponível') : [])
 
+const { data: dataAluguel } = await useFetch('/api/fetch/todos-alugueis')
+
 const servicos = computed(() => [
   { titulo: 'USUÁRIOS', icone: 'heroicons:user', quantidade: dataUsers.value ? dataUsers.value.length : 0, rodape: 'Total de Usuários' },
   { titulo: 'BICICLETAS', icone: 'heroicons:chart-pie', quantidade: dataBikes.value ? dataBikes.value.length : 0, rodape: 'Total de Bicicletas' },
   { titulo: 'ALUGADAS', icone: 'heroicons:lock-open', quantidade: bikesAlugadas.value.length, rodape: 'Total de Bicicletas alugadas' },
   { titulo: 'NÃO ALUGADAS', icone: 'heroicons:lock-closed', quantidade: bikesNaoAlugadas.value.length, rodape: 'Total de Bicicletas não alugadas' },
+  { titulo: 'QUANTIDADE ALUGUEIS', icone: 'heroicons:chart-bar', quantidade: dataAluguel.value?.total, rodape: 'Total de Alugueis' },
+  { titulo: 'VALOR PAGO', icone: 'heroicons:banknotes', quantidade: dataAluguel.value?.totalPago, rodape: 'Total de Valor Arrecadado' },
 ])
 
 const items = computed(() => {
@@ -51,8 +55,8 @@ async function irAlugue(){
 <template>
   <section>
     <div v-if="user?.level === 'Administrador'">
-      <div class=" mt-12 flex items-center justify-center space-x-10">
-        <UCard v-for="{titulo, icone, quantidade, rodape} in servicos" :key="titulo" class="drop-shadow-[0_1px_2px_rgba(180,180,180,0.2)]" :ui="{ header: { base: 'dark:bg-[#0e1a36]' }, body: { base: 'dark:bg-[#0e1a36] ' }, footer: { base: 'dark:bg-[#0e1a36] ' }, }">
+      <div class="grid grid-cols-1 place-items-center gap-8 p-3 py-10 text-center text-sm sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <UCard v-for="{titulo, icone, quantidade, rodape} in servicos" :key="titulo" class="w-[300px] drop-shadow-[0_1px_2px_rgba(180,180,180,0.2)]" :ui="{ header: { base: 'dark:bg-[#0e1a36]' }, body: { base: 'dark:bg-[#0e1a36] ' }, footer: { base: 'dark:bg-[#0e1a36] ' }, }">
           <span class="block text-right text-[20px] font-bold">
             {{ titulo }}
           </span>
