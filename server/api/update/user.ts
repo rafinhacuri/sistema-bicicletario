@@ -26,15 +26,15 @@ export default defineEventHandler(async event => {
 
   if(email && email !== user.email) user.email = email
   if(nome && nome !== user.nome) user.nome = nome
-  if(sobrenome && sobrenome !== user.sobrenome) user.sobrenome = sobrenome
-  if(cpf && cpf !== user.cpf) user.cpf = cpf
+  if(sobrenome !== user.sobrenome) user.sobrenome = sobrenome
+  if(cpf !== user.cpf) user.cpf = cpf
   if(senhaNova) user.senha = sha512Crypt(senhaNova)
   if(dadosBancarios !== user.dadosBancarios) user.dadosBancarios = dadosBancarios
-  if(numeroCartao && numeroCartao !== user.numeroCartao) user.numeroCartao = numeroCartao
-  if(cvv && cvv !== user.cvv) user.cvv = cvv
-  if(dataValidade && dataValidade !== user.dataValidade) user.dataValidade = dataValidade
-  if(nomeCartao && nomeCartao !== user.nomeCartao) user.nomeCartao = nomeCartao
-  if(cpfCartao && cpfCartao !== user.cpfCartao) user.cpfCartao = cpfCartao
+  if(numeroCartao !== user.numeroCartao) user.numeroCartao = numeroCartao
+  if(cvv !== user.cvv) user.cvv = cvv
+  if(dataValidade !== user.dataValidade) user.dataValidade = dataValidade
+  if(nomeCartao !== user.nomeCartao) user.nomeCartao = nomeCartao
+  if(cpfCartao !== user.cpfCartao) user.cpfCartao = cpfCartao
 
   await user.save()
 

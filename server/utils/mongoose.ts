@@ -38,4 +38,5 @@ export const Bikes = mongoose.model('bikes', new Schema<BikeMongo>({
   marca: { type: String, required: true },
   precoMinuto: { type: Number, required: true },
   valor: { type: Number, required: true },
+  foto: { type: String, required: false },
 }))

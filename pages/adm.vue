@@ -79,6 +79,16 @@ const modalInsertBike = ref(false)
 
 const state = ref<Bike>({ codigo: '', modelo: '', marca: '', precoMinuto: 0, valor: 0 })
 
+const foto = ref<File | null>(null)
+
+const { open, onChange } = useFileDialog({ accept: 'image/*', multiple: false })
+onChange(file => {
+  if(file !== null && file.length > 0){
+    [foto.value] = file
+    return { title: 'Imagem atualizada com sucesso', icon: 'i-heroicons-check-badge', color: 'green' }
+  }
+})
+
 async function insertBike(){
   start()
 
@@ -89,7 +99,15 @@ async function insertBike(){
     return finish({ error: true })
   }
 
-  const res = await $fetch('/api/insert/bike', { method: 'post', body: body.data })
+  const formData = new FormData()
+  formData.append('foto', foto.value || '')
+  formData.append('codigo', body.data.codigo)
+  formData.append('modelo', body.data.modelo)
+  formData.append('marca', body.data.marca)
+  formData.append('precoMinuto', body.data.precoMinuto.toString())
+  formData.append('valor', body.data.valor.toString())
+
+  const res = await $fetch('/api/insert/bike', { method: 'post', body: formData })
     .catch(error => { toast.add({ title: error.data.message, icon: 'i-heroicons-exclamation-triangle', color: 'red' }) })
 
   if(!res) return finish({ error: true })
@@ -110,11 +128,23 @@ function abrirEditBike(id: string, codigo: string, modelo: string, marca: string
   modalInsertBike.value = true
 }
 
+const fotoEdit = ref<File | null>(null)
+
 watch(modalInsertBike, nv => {
   if(!nv){
     isEditBike.value = false
     idEditBike.value = ''
+    foto.value = null
+    fotoEdit.value = null
     state.value = { codigo: '', modelo: '', marca: '', precoMinuto: 0, valor: 0 }
+  }
+})
+
+const { open: openEdit, onChange: onChangeEdit } = useFileDialog({ accept: 'image/*', multiple: false })
+onChangeEdit(file => {
+  if(file !== null && file.length > 0){
+    [fotoEdit.value] = file
+    return { title: 'Imagem atualizada com sucesso', icon: 'i-heroicons-check-badge', color: 'green' }
   }
 })
 
@@ -130,7 +160,16 @@ async function editBike(){
     return finish({ error: true })
   }
 
-  const res = await $fetch('/api/update/bike', { method: 'put', body: body.data })
+  const formData = new FormData()
+  formData.append('foto', fotoEdit.value || '')
+  formData.append('id', body.data.id)
+  formData.append('codigo', body.data.codigo || '')
+  formData.append('modelo', body.data.modelo || '')
+  formData.append('marca', body.data.marca || '')
+  formData.append('precoMinuto', body.data.precoMinuto ? body.data.precoMinuto.toString() : '')
+  formData.append('valor', body.data.valor ? body.data.valor.toString() : '')
+
+  const res = await $fetch('/api/update/bike', { method: 'put', body: formData })
     .catch(error => { toast.add({ title: error.data.message, icon: 'i-heroicons-exclamation-triangle', color: 'red' }) })
 
   if(!res) return finish({ error: true })
@@ -273,6 +312,14 @@ async function deleteUser(){
           <div>
             <label class="text-sm font-medium text-gray-900 dark:text-white" for="valor-bicicleta">Valor da Bicicleta</label>
             <UInput id="valor-bicicleta" v-model="state.valor" icon="i-heroicons-currency-dollar" type="number" />
+          </div>
+          <div v-if="isEditBike">
+            <label class="text-sm font-medium text-gray-900 dark:text-white" for="image-perfil">Foto da Bicicleta</label>
+            <UButton class="w-full" :color="fotoEdit ? 'green' : 'blue'" :label="fotoEdit ? 'Selecionado' : 'Selecione'" :icon="fotoEdit ? 'i-heroicons-check-circle' : 'i-heroicons-arrow-up-tray'" @click="openEdit()" />
+          </div>
+          <div v-else>
+            <label class="text-sm font-medium text-gray-900 dark:text-white" for="image-perfil">Foto da Bicicleta</label>
+            <UButton class="w-full" :color="foto? 'green' : 'blue'" :label="foto? 'Selecionado' : 'Selecione'" :icon="foto ? 'i-heroicons-check-circle' : 'i-heroicons-arrow-up-tray'" @click="open()" />
           </div>
         </div>
 

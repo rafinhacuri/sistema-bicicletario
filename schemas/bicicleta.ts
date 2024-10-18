@@ -6,6 +6,7 @@ export const BikeSchema = z.object({
   marca: z.string().trim().min(1, { message: 'Preencha a marca' }),
   precoMinuto: z.number().min(0, { message: 'Preço minimo deve ser maior que 0' }),
   valor: z.number().min(0, { message: 'Valor deve ser maior que 0' }),
+  foto: z.any(),
 })
 
 export type Bike = z.infer<typeof BikeSchema>
@@ -17,6 +18,7 @@ export const BikeMongoSchema = z.object({
   marca: z.string().trim().min(1, { message: 'Preencha a marca' }),
   precoMinuto: z.number().min(0, { message: 'Preço minimo deve ser maior que 0' }),
   valor: z.number().min(0, { message: 'Valor deve ser maior que 0' }),
+  foto: z.string().optional(),
 })
 
 export type BikeMongo = z.infer<typeof BikeMongoSchema>
@@ -28,6 +30,7 @@ export const BikeUpadateSchema = z.object({
   marca: z.string().optional(),
   precoMinuto: z.number().optional(),
   valor: z.number().optional(),
+  foto: z.any(),
 })
 
 export type BikeUpadate = z.infer<typeof BikeUpadateSchema>

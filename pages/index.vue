@@ -26,11 +26,7 @@ const servicos = computed(() => [
 const items = computed(() => {
   const fotos: string[] = []
   if(dataBikes.value){
-    if(dataBikes.value.length > 0){
-      for(let i = 0; i < dataBikes.value.length; i++){
-        fotos.push(`/${i + 1}.jpeg`)
-      }
-    }
+    if(dataBikes.value && dataBikes.value.length > 0) for(const { foto } of dataBikes.value) if(foto) fotos.push(`/foto/${foto}`)
     return fotos
   }
   return []
@@ -86,7 +82,7 @@ async function irAlugue(){
           <UButton color="green" variant="outline" :ui="{ rounded: 'rounded-full' }" icon="i-heroicons-bolt" label="Quero Alugar Uma" @click="irAlugue" />
         </div>
 
-        <UCarousel ref="carouselRef" v-slot="{ item }" :items="items" :ui="{ item: 'basis-full' }" class="w-full overflow-hidden rounded-lg md:w-[500px]" arrows indicators>
+        <UCarousel ref="carouselRef" v-slot="{ item }" :items="items" :ui="{ item: 'basis-full' }" class="mb-10 w-full overflow-hidden rounded-lg md:w-3/5" arrows indicators>
           <img :src="item" class="w-full" draggable="false" :alt="item">
         </UCarousel>
       </div>
