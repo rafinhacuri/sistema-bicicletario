@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const { loggedIn, user, clear } = useUserSession()
 
+const { data } = await useFetch('/api/fetch/user', { method: 'post', body: { user: user.value?.email } })
+
 const menuClosed = ref(true)
 
 const menu = ref<{ nome: string, to: string, nivel: null | string[] }[]>([
@@ -47,7 +49,8 @@ async function logout(){
       </NuxtLink>
       <div class="mt-4 flex items-center space-x-4 sm:mt-0 lg:order-2">
         <UDropdown v-if="loggedIn" :items="userMenu" :popper="{ placement: 'bottom-start' }">
-          <img class="size-8 rounded-full" src="/icone.jpg" alt="user">
+          <img v-if="data && data.foto" :src="`/imagem/${data.foto}`" class="size-8 rounded-full" alt="Logo do Bicicletario">
+          <img v-else class="size-8 rounded-full" src="/icone.jpg" alt="user">
         </UDropdown>
         <UButton v-else icon="i-heroicons-arrow-left-on-rectangle" size="sm" color="gray" variant="solid" label="Acessar" to="/login" />
         <ClientOnly>

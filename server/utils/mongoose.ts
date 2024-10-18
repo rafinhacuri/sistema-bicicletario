@@ -28,6 +28,7 @@ export const Users = mongoose.model('user', new Schema<UserMongo>({
   dataValidade: { type: String, required: false },
   nomeCartao: { type: String, required: false },
   cpfCartao: { type: String, required: false },
+  foto: { type: String, required: false },
 }))
 
 export const Bikes = mongoose.model('bikes', new Schema<BikeMongo>({

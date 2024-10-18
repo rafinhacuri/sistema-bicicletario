@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-const { PRODUCTION, SITE_URL, MONGO_URL, MONGO_USERNAME, MONGO_PASSWORD, MONGO_DB_NAME, DEV_URL, DEV_KEY, DEV_CERT } = process.env
+const { PRODUCTION, SITE_URL, MONGO_URL, MONGO_USERNAME, MONGO_PASSWORD, MONGO_DB_NAME, DEV_URL, DEV_KEY, DEV_CERT, FILES_PATH } = process.env
 export default defineNuxtConfig({
 
   modules: ['@nuxt/ui', '@vueuse/nuxt', 'nuxt-auth-utils', '@nuxt/scripts', '@nuxtjs/seo', 'nuxt-security'],
@@ -31,6 +31,7 @@ export default defineNuxtConfig({
     MONGO_USERNAME,
     MONGO_PASSWORD,
     MONGO_DB_NAME,
+    FILES_PATH,
     session: { maxAge: 8 * 60 * 60 },
     public: { PRODUCTION, SITE_URL },
   },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { UserEdit } from '~/schemas/user'
-import { UserEditSchema } from '~/schemas/user'
+import { UserEditSchema, UserFotoSchema } from '~/schemas/user'
 
 definePageMeta({ pageTransition: { name: 'slide-right', mode: 'out-in' } })
 
@@ -83,16 +83,62 @@ watch(isEdit, nv => {
     stateUser.value.cpfCartao = data.value.cpfCartao ? data.value.cpfCartao : ''
   }
 })
+
+const modalFoto = ref(false)
+
+const foto = ref<File | null>(null)
+
+const { open, onChange } = useFileDialog({ accept: 'image/*', multiple: false })
+onChange(file => {
+  if(file !== null && file.length > 0){
+    [foto.value] = file
+    return { title: 'Imagem atualizada com sucesso', icon: 'i-heroicons-check-badge', color: 'green' }
+  }
+})
+
+async function inserFoto(){
+  start()
+
+  const body = UserFotoSchema.safeParse({ id: data.value?._id, imagem: foto.value })
+
+  if(!body.success){
+    toast.add({ title: body.error.errors[0].message, icon: 'i-heroicons-exclamation-triangle', color: 'red' })
+    return finish({ error: true })
+  }
+
+  const formData = new FormData()
+  formData.append('imagem', foto.value || '')
+  formData.append('id', body.data.id)
+
+  const res = await $fetch('/api/update/foto', { method: 'post', body: formData })
+    .catch(error => { toast.add({ title: error.data.message, icon: 'i-heroicons-exclamation-triangle', color: 'red' }) })
+
+  if(!res) return finish({ error: true })
+
+  finish()
+  await refresh()
+  toast.add({ title: res, icon: 'i-heroicons-check-badge', color: 'green' })
+  modalFoto.value = false
+}
+
+watch(modalFoto, nv => {
+  if(!nv) foto.value = null
+})
 </script>
 
 <template>
   <section>
-    <div class="flex flex-col items-center justify-center">
-      <img src="/icone.jpg" alt="user" class="mt-9 size-36 rounded-full">
-      <h1 v-if="data" class="mt-4 text-2xl font-semibold">
-        {{ data.nome }} {{ data.sobrenome }}
-      </h1>
+    <div class="mt-6 flex justify-center">
+      <div class="relative flex" :class="{ 'group cursor-pointer': isEdit }" role="button" @click="isEdit ? modalFoto = true : modalFoto = false" @keydown.enter="isEdit ? modalFoto = true : modalFoto = false">
+        <img v-if="data && data.foto" class="size-36 rounded-full" :src="`/imagem/${data.foto}`" :alt="data.nome">
+        <img v-else class="size-36 rounded-full" src="/icone.jpg" alt="Usuário sem foto">
+        <div class="invisible absolute flex size-36 items-center justify-center rounded-full bg-slate-950 opacity-70 group-hover:visible">
+          <UIcon name="i-heroicons-camera" class="text-xl text-white" />
+        </div>
+      </div>
     </div>
+
+    <p>{{ foto }}</p>
 
     <div class="m-6">
       <div class="grid grid-cols-3 gap-4">
@@ -167,5 +213,27 @@ watch(isEdit, nv => {
         Confirmar Edição
       </UButton>
     </div>
+
+    <UModal v-model="modalFoto" prevent-close :ui="{ width: '!w-1/5 !max-w-none' }">
+      <UCard>
+        <template #header>
+          <h2 class="pt-3 text-center text-xl font-semibold leading-tight text-gray-900 dark:text-white">
+            Editar Foto de Perfil
+          </h2>
+        </template>
+
+        <div>
+          <label class="text-sm font-medium text-gray-900 dark:text-white" for="image-perfil">Foto de Perfil</label>
+          <UButton class="w-full" :color="foto? 'green' : 'blue'" :label="foto? 'Selecionado' : 'Selecione'" :icon="foto ? 'i-heroicons-check-circle' : 'i-heroicons-arrow-up-tray'" @click="open()" />
+        </div>
+
+        <template #footer>
+          <div class="flex justify-center space-x-4">
+            <UButton label="Confirmar" color="green" icon="i-heroicons-check" :disabled="isLoading" @click="inserFoto" />
+            <UButton label="Cancelar" color="red" icon="i-heroicons-no-symbol" :disabled="isLoading" @click="modalFoto = false" />
+          </div>
+        </template>
+      </UCard>
+    </UModal>
   </section>
 </template>

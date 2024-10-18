@@ -21,6 +21,13 @@ export const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>
 
+export const UserFotoSchema = z.object({
+  id: z.string().min(1, { message: 'Preencha sua id' }),
+  foto: z.any(),
+})
+
+export type UserFoto = z.infer<typeof UserFotoSchema>
+
 export const UserMongoSchema = z.object({
   email: z.string().email({ message: 'Preencha um Email válido' }),
   senha: z.string().min(1, { message: 'Preencha sua Senha' }),
@@ -33,6 +40,7 @@ export const UserMongoSchema = z.object({
   dataValidade: z.string().optional(),
   nomeCartao: z.string().optional(),
   cpfCartao: z.string().optional(),
+  foto: z.string().optional(),
 })
 
 export type UserMongo = z.infer<typeof UserMongoSchema>

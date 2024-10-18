@@ -12,13 +12,14 @@
     "lint": "eslint . && stylelint \"**/*.css\"",
     "lint:fix": "eslint . --fix && stylelint \"**/*.css\" --fix"
   },
-
   "dependencies": {
     "@nuxt/scripts": "^0.8.5",
     "@nuxt/ui": "^2.18.4",
     "@nuxtjs/seo": "2.0.0-rc.21",
+    "@vueuse/nuxt": "^11.1.0",
     "ldap-passwords": "^3.0.3",
     "ldapjs": "^3.0.7",
+    "mime": "^4.0.4",
     "mongoose": "^8.6.2",
     "nuxt": "^3.13.1",
     "nuxt-auth-utils": "^0.3.8",
@@ -36,5 +37,4 @@
     "stylelint-config-standard": "^36.0.1",
     "vue-tsc": "^2.1.6"
   }
-
 }
