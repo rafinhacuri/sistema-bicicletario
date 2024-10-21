@@ -271,7 +271,7 @@ watch(modalFoto, nv => {
               <UBadge size="xs" :label="formatarData(row.dataInicio)" variant="outline" color="fuchsia" />
             </template>
             <template #dataFim-data="{ row }">
-              <UBadge size="xs" :label="formatarData(row.dataFim)" variant="outline" color="fuchsia" />
+              <UBadge size="xs" :label=" row.dataFim ? formatarData(row.dataFim) : 'Aluguel não finalizado'" variant="outline" color="fuchsia" />
             </template>
 
             <template #pago-data="{ row }">

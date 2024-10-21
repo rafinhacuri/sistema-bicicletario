@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const { loggedIn, user, clear } = useUserSession()
+const { loggedIn, user, clear, fetch } = useUserSession()
 
 const { data } = await useFetch('/api/fetch/user', { method: 'post', body: { user: user.value?.email } })
 
 const menuClosed = ref(true)
 
-const menu = ref<{ nome: string, to: string, nivel: null | string[] }[]>([
+const menu = computed(() => [
   { nome: 'Início', to: '/', nivel: null },
   { nome: 'Alugue', to: `/alugue`, nivel: ['Usuário'] },
   { nome: 'Perfil', to: `/user/${user.value?.email}`, nivel: ['Usuário'] },
@@ -31,6 +31,7 @@ const userMenu = computed(() => [
 
 async function logout(){
   await clear()
+  await fetch()
   navigateTo('/login')
 }
 </script>

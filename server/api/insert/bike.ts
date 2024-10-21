@@ -31,6 +31,11 @@ export default defineEventHandler(async event => {
 
   if(fotoFD){
     const imagem = `${Date.now()}`
+
+    const fotoExtension = fotoFD.name.split('.').pop()?.toLocaleLowerCase() || ''
+
+    if(!['jpeg', 'jpg', 'png'].includes(fotoExtension)) throw createError({ status: 401, message: 'Formato de imagem inválido (png, jpg, jpeg)' })
+
     const fotoJimp = await Jimp.read(Buffer.from(await fotoFD.arrayBuffer()))
     await fotoJimp.cover({ w: 1920, h: 1080 }).write(`${FILES_PATH}bikes/${imagem}.png`)
     fotoCaminho = `${imagem}.png`
